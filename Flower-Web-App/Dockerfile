@@ -1,20 +1,20 @@
-# Use an official Node.js runtime as a parent image
+# Use a Node.js image from the Docker Hub
 FROM node:18
 
-# Set the working directory inside the container
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if exists)
-COPY Flower-Web-App/package*.json ./
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application code to the container
-COPY Flower-Web-App/ ./
+# Copy the rest of the application
+COPY . .
 
-# Expose the port the app will run on
-EXPOSE 8000
+# Expose port 8080
+EXPOSE 8080
 
-# Define the command to run the app
+# Start the app
 CMD ["npm", "start"]
