@@ -1,0 +1,7 @@
+image:
+  repository: ${DOCKER_USERNAME}/flowershop
+  tag: dev-latest
+
+service:
+  type: ClusterIP
+  port: 8080

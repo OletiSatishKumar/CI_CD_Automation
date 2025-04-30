@@ -1,0 +1,20 @@
+name: Update Infrastructure
+
+on:
+  repository_dispatch:
+    types: [update_infra]
+
+jobs:
+  update-infra:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Infra Repo
+      uses: actions/checkout@v3
+
+    - name: Update values.yaml
+      run: |
+        TAG="${{ github.event.client_payload.tag }}"
+        sed -i "s|tag:.*|tag: \"$TAG\"|" helm/flowershop/values.yaml
+        git commit -am "Update Docker image tag to $TAG"
+        git push origin master
