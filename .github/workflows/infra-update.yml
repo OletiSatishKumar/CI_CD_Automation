@@ -12,13 +12,17 @@ jobs:
     - name: Checkout Infra Repository
       uses: actions/checkout@v3
       with:
-        repository: ${{ github.repository }}  # This is the repository from which this action is being triggered
-        token: ${{ secrets.GH_TOKEN }}       # Use your GH token to access the repo
+        repository: ${{ secrets.INFRA_REPO }}  # Ensure correct repository name
+        token: ${{ secrets.GH_TOKEN }}         # Your GitHub token to access the repository
+
+    - name: Output tag for debugging
+      run: |
+        echo "Tag: ${{ github.event.client_payload.tag }}"
 
     - name: Update values.yaml with new tag
       run: |
-        # Ensure the correct values.yaml file is updated
-        sed -i 's/tag: .*/tag: ${{ github.event.client_payload.tag }}/' infra/helm/flowershop/values.yaml
+        echo "Updating values.yaml with new tag: ${{ github.event.client_payload.tag }}"
+        sed -i "s/tag: .*/tag: ${{ github.event.client_payload.tag }}/" infra/helm/flowershop/values.yaml
         cat infra/helm/flowershop/values.yaml  # Output to verify the change
 
     - name: Commit and push changes
