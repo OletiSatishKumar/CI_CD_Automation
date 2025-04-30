@@ -15,15 +15,25 @@ jobs:
         repository: ${{ secrets.INFRA_REPO }}  # Ensure correct repository name
         token: ${{ secrets.GH_TOKEN }}         # Your GitHub token to access the repository
 
-    - name: Output tag for debugging
+    - name: Debug Payload
       run: |
-        echo "Tag: ${{ github.event.client_payload.tag }}"
+        echo "Payload: ${{ github.event.client_payload }}"
+
+    - name: List files for debugging
+      run: |
+        ls -la infra/helm/flowershop
 
     - name: Update values.yaml with new tag
       run: |
         echo "Updating values.yaml with new tag: ${{ github.event.client_payload.tag }}"
+        # Backup file before applying changes
+        cp infra/helm/flowershop/values.yaml infra/helm/flowershop/values.yaml.bak
+        # Apply sed and show result
         sed -i "s/tag: .*/tag: ${{ github.event.client_payload.tag }}/" infra/helm/flowershop/values.yaml
-        cat infra/helm/flowershop/values.yaml  # Output to verify the change
+        echo "Before:"
+        cat infra/helm/flowershop/values.yaml.bak
+        echo "After:"
+        cat infra/helm/flowershop/values.yaml
 
     - name: Commit and push changes
       run: |
