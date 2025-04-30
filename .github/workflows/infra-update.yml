@@ -1,4 +1,4 @@
-name: Update Infrastructure
+name: Infra Update
 
 on:
   repository_dispatch:
@@ -9,12 +9,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Infra Repo
+    - name: Checkout Infra Repository
       uses: actions/checkout@v3
+      with:
+        repository: ${{ github.repository }}  # This is the repository from which this action is being triggered
+        token: ${{ secrets.GH_TOKEN }}       # Use your GH token to access the repo
 
-    - name: Update values.yaml
+    - name: Update values.yaml with new tag
       run: |
-        TAG="${{ github.event.client_payload.tag }}"
-        sed -i "s|tag:.*|tag: \"$TAG\"|" helm/flowershop/values.yaml
-        git commit -am "Update Docker image tag to $TAG"
-        git push origin master
+        # Ensure the correct values.yaml file is updated
+        sed -i 's/tag: .*/tag: ${{ github.event.client_payload.tag }}/' infra/helm/flowershop/values.yaml
+        cat infra/helm/flowershop/values.yaml  # Output to verify the change
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add infra/helm/flowershop/values.yaml
+        git commit -m "Update values.yaml with new tag ${{ github.event.client_payload.tag }}"
+        git push origin master  # or any other branch you use for infra changes
