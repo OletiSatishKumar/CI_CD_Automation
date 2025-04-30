@@ -14,3 +14,4 @@ Contains the infrastructure configuration files.
 ### Setup
 1. Configure ArgoCD to monitor this repo.
 2. Deploy using Helm charts in the `infra/helm/flowershop` folder.
+3. Do the steps 
